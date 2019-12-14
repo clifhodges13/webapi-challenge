@@ -26,4 +26,4 @@ server.get("/", (req, res) => res.send("<h1>Welcome to my API!</>"));
 
 server.use("/projects", projectRouter);
 
-server.listen(port, () => console.log(`Server is running at http://localhost:${port}`));
+server.listen(port, () => console.log(`This is a friendly reminder that your server is working ((for now)) at http://localhost:${port}`));
