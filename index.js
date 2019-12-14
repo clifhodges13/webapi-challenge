@@ -14,10 +14,9 @@ Go code!
 */
 
 const express = require("express");
-
+const server = express();
 const projectRouter = require("./routes/projectRoute");
 
-const server = express();
 const port = 8787;
 
 server.use(express.json());
