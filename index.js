@@ -12,3 +12,19 @@ I need this code, just don't know where, perhaps should make some middleware, do
 
 Go code!
 */
+
+const express = require("express");
+
+const projectRouter = require("./routes/projectRoute");
+
+const server = express();
+const port = 8787;
+
+server.use(express.json());
+
+// Welcome message
+server.get("/", (req, res) => res.send("<h1>Welcome to my API!</>"));
+
+server.use("/projects", projectRouter);
+
+server.listen(port, () => console.log(`Server is running at http://localhost:${port}`));
