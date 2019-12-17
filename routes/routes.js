@@ -56,9 +56,20 @@ router.post("/:id/actions", (req, res) => {
   if (!req.body.notes || !req.body.description) {
     return res.status(400).json({ message: "Please include a description and notes." })
   }
-  actionsDb.insert(req.body)
-    .then(act => res.status(201).json(act))
-    .catch(err => res.status(500).json({ errorMessage: "There was a problem adding the action to the database. Please try again later." }))
+  db.get(req.params.id)
+    .then((project) => {
+      if(project) {
+        return project
+    } else {
+      res.status(404).json({ errorMessage: "The project with the specified ID does not exist." })
+    }})
+    .then(proj => {
+      console.log(req.body)
+      actionsDb.insert(req.body)
+        .then(act => res.status(201).json(act))
+        .catch(err => res.status(500).json({ errorMessage: "There was a problem adding the action to the database. Please try again later." }))
+    })
+    .catch(err => res.status(500).json({ errorMessage: "An internal error occurred. Please try again later." }))
 });
 
 // PUT an existing project
@@ -77,7 +88,7 @@ router.put("/:id/actions/:actId", (req, res) => {
     return res.status(400).json({ message: "Please include a description, notes, and the project_id for the associated project." })
   }
   db.get(req.params.id)
-    .then(project => {
+    .then((project) => {
       if(project) {
         return project
     } else {
@@ -91,13 +102,11 @@ router.put("/:id/actions/:actId", (req, res) => {
       } else {
         res.status(404).json({ errorMessage: "The action with the specified ID does not exist." })
       }
-      res.status(200).json(action.id)
-        actionsDb.update(action.id, req.body)
-          .then(updateAction => res.status(200).json({ updatedAction: updateAction }))
-          .catch(err => res.status(500).json({ errorMessage: "There was a problem updating the action. Please try again later." }))
     })
     .then(action => {
-      res.status(200).json(action.id)
+      actionsDb.update(action.id, req.body)
+        .then(updateAction => res.status(200).json({ updatedAction: updateAction }))
+        .catch(err => res.status(500).json({ errorMessage: "There was a problem updating the action. Please try again later." }))
     })
     .catch(err => res.status(500).json({ errorMessage: "An internal error occurred. Please try again later." }))
 })
